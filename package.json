@@ -34,6 +34,7 @@
 		"terminal-image": "^1.2.0"
 	},
 	"devDependencies": {
+		"@ava/babel-preset-stage-4": "^4.0.0",
 		"@babel/cli": "^7.2.3",
 		"@babel/core": "^7.3.3",
 		"@babel/preset-react": "^7.0.0",
