@@ -27,7 +27,7 @@
 		"test": "xo && ava"
 	},
 	"main": "./dist/index",
-	"types": "./built/index.d.ts",
+	"types": "./dist/index.d.ts",
 	"files": [
 		"dist"
 	],
