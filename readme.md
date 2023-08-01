@@ -35,3 +35,14 @@ Besides the props below, it accepts props allowed in [`terminal-image`](https://
 Type: `string | Buffer`
 
 Path to an image or the image as a `Buffer`. Supports PNG images, JPEG images and animated GIFs.
+
+#### alt
+
+Type: `string`
+
+Alternative text to show when an image can't be displayed.
+
+
+## License
+
+MIT © [Kevin Mårtensson](https://github.com/kevva)

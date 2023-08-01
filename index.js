@@ -1,12 +1,10 @@
 /* eslint-disable react/no-unused-prop-types */
 'use strict';
-const {Text} = require('ink');
-const terminalImage = require('terminal-image');
-const propTypes = require('prop-types');
-const React = require('react');
-const fileType = require('file-type');
-
-const {useState, useEffect} = React;
+import Text from 'ink'
+import terminalImage from 'terminal-image'
+import propTypes from 'prop-types'
+import React, {useState, useEffect} from 'react'
+import fileType from 'file-type'
 
 const Image = props => {
 	const [imageData, setImageData] = useState('');
