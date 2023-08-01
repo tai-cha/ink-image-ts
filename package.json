@@ -9,19 +9,20 @@
 		"email": "kevinmartensson@gmail.com",
 		"url": "github.com/kevva"
 	},
+	"type": "module",
 	"engines": {
 		"node": ">=10"
 	},
 	"scripts": {
-		"build": "babel index.js --out-file=dist.js",
+		"build": "tsc",
 		"prepublish": "npm run build",
 		"pretest": "npm run build",
 		"test": "xo && ava"
 	},
-	"main": "dist.js",
+	"main": "./dist/index",
+	"types": "./built/index.d.ts",
 	"files": [
-		"dist.js",
-		"dist.d.ts"
+		"dist"
 	],
 	"keywords": [
 		"ink-component",
@@ -35,10 +36,8 @@
 		"terminal-image": "^1.2.0"
 	},
 	"devDependencies": {
-		"@ava/babel-preset-stage-4": "^4.0.0",
-		"@babel/cli": "^7.22.9",
-		"@babel/preset-env": "^7.22.9",
-		"@babel/preset-react": "^7.22.5",
+		"@sindresorhus/tsconfig": "^3.0.1",
+		"@types/react": "^18.2.18",
 		"ava": "^5.2.0",
 		"delay": "^4.4.0",
 		"eslint-config-xo-react": "^0.27.0",
@@ -47,18 +46,17 @@
 		"ink": "^4.1.0",
 		"ink-testing-library": "^3.0.0",
 		"react": "^18.2.0",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.0.3",
 		"xo": "^0.53.1"
 	},
-	"babel": {
-		"presets": [
-			"@ava/stage-4",
-			"@babel/preset-env",
-			"@babel/preset-react"
-		]
-	},
 	"ava": {
-		"files": [
-			"!*.d.ts"
+		"extensions": {
+			"ts": "module",
+			"tsx": "module"
+		},
+		"nodeArguments": [
+			"--loader=ts-node/esm"
 		]
 	},
 	"xo": {

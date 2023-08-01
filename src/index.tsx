@@ -1,22 +1,44 @@
 /* eslint-disable react/no-unused-prop-types */
 'use strict';
-import Text from 'ink'
+import {Text} from 'ink'
 import terminalImage from 'terminal-image'
-import propTypes from 'prop-types'
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import fileType from 'file-type'
 
-const Image = props => {
+type Props = {
+	src: Buffer | string,
+	width?: number | string,
+	height?: number | string,
+	preserveAspectRatio?: boolean,
+	maximumFrameRate?: number
+}
+
+type GifProps = {
+	src: Buffer | string,
+	width?: number,
+	height?: number,
+	preserveAspectRatio?: boolean,
+	maximumFrameRate?: number
+}
+
+const convertPropsToGifProps = (props:Props):GifProps => {
+	let width:number|undefined = typeof props.width === 'string' ? undefined : props.width
+	let height:number|undefined = typeof props.height === 'string' ? undefined : props.height
+
+	return {...props, width, height}
+}
+
+const Image = (props:Props) => {
 	const [imageData, setImageData] = useState('');
 
 	useEffect(() => {
 		let isPlaying = true;
 		(async () => {
 			if (Buffer.isBuffer(props.src)) {
-				if ((await fileType.fromBuffer(props.src)) === 'gif') {
+				if ((await fileType.fromBuffer(props.src).then(ft => ft?.ext)) === 'gif') {
 					const stopAnimation = terminalImage.gifBuffer(props.src, {
-						...props,
-						renderFrame: imageData => {
+						...convertPropsToGifProps(props),
+						renderFrame: (imageData:string) => {
 							if (isPlaying) {
 								setImageData(imageData);
 							} else {
@@ -27,9 +49,9 @@ const Image = props => {
 				} else {
 					setImageData(await terminalImage.buffer(props.src, props));
 				}
-			} else if ((await fileType.fromFile(props.src)) === 'gif') {
+			} else if ((await fileType.fromFile(props.src).then(ft => ft?.ext)) === 'gif') {
 				const stopAnimation = terminalImage.gifFile(props.src, {
-					...props,
+					...convertPropsToGifProps(props),
 					renderFrame: imageData => {
 						if (isPlaying) {
 							setImageData(imageData);
@@ -49,23 +71,6 @@ const Image = props => {
 	}, [props]);
 
 	return <Text>{imageData}</Text>;
-};
-
-Image.propTypes = {
-	src: propTypes.oneOfType([
-		propTypes.object,
-		propTypes.string
-	]).isRequired,
-	width: propTypes.oneOfType([
-		propTypes.number,
-		propTypes.string
-	]),
-	height: propTypes.oneOfType([
-		propTypes.number,
-		propTypes.string
-	]),
-	preserveAspectRatio: propTypes.bool,
-	maximumFrameRate: propTypes.number
 };
 
 Image.defaultProps = {

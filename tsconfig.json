@@ -1,0 +1,9 @@
+{
+	"extends": "@sindresorhus/tsconfig",
+	"baseUrl": "./source",
+	"compilerOptions": {
+		"outDir": "dist"
+	},
+	"include": ["src", "config"],
+	"exclude": ["dist"]
+}

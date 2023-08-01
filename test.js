@@ -3,7 +3,7 @@ import React from 'react';
 import {render} from 'ink-testing-library';
 import terminalImage from 'terminal-image';
 import delay from 'delay';
-import Image from '.';
+import Image from './src/index.js';
 
 test('render', async t => {
 	const actual = render(<Image src='./fixture.png'/>);
