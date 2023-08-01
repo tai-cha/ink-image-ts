@@ -75,4 +75,4 @@ Image.defaultProps = {
 	maximumFrameRate: 30
 };
 
-module.exports = Image;
+export default Image
