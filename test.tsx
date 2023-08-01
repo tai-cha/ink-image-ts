@@ -1,12 +1,12 @@
-import {serial as test} from 'ava';
+import test from 'ava';
 import React from 'react';
 import {render} from 'ink-testing-library';
 import terminalImage from 'terminal-image';
 import delay from 'delay';
-import Image from './src/index.js';
+import Image from './src/index';
 
 test('render', async t => {
-	const actual = render(<Image src='./fixture.png'/>);
+	const actual = render(<Image src='./fixture.png' />);
 	const expected = await terminalImage.file('./fixture.png');
 
 	await delay(2000);

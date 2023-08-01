@@ -28,7 +28,7 @@ const convertPropsToGifProps = (props:Props):GifProps => {
 	return {...props, width, height}
 }
 
-const Image = (props:Props) => {
+const Image = (props:Props):JSX.Element => {
 	const [imageData, setImageData] = useState('');
 
 	useEffect(() => {
