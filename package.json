@@ -1,17 +1,24 @@
 {
-	"name": "ink-image",
-	"version": "2.0.0",
+	"name": "ink-image-ts",
+	"version": "3.0.0",
 	"description": "Image component for Ink",
 	"license": "MIT",
-	"repository": "kevva/ink-image",
+	"repository": "taichanne30/ink-image",
 	"author": {
-		"name": "Kevin Mårtensson",
-		"email": "kevinmartensson@gmail.com",
-		"url": "github.com/kevva"
+		"name": "taichan",
+		"email": "dev@taichan.site",
+		"url": "https://github.com/taichanne30"
 	},
+	"contributors": [
+		{
+			"name": "Kevin Mårtensson",
+			"email": "kevinmartensson@gmail.com",
+			"url": "https://github.com/kevva"
+		}
+	],
 	"type": "module",
 	"engines": {
-		"node": ">=10"
+		"node": "18>="
 	},
 	"scripts": {
 		"build": "tsc",
@@ -37,6 +44,7 @@
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
+		"@types/ink-testing-library": "^1.0.1",
 		"@types/react": "^18.2.18",
 		"ava": "^5.2.0",
 		"delay": "^4.4.0",
