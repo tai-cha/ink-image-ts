@@ -10,10 +10,19 @@ type ImageProps = {
     preserveAspectRatio?: boolean;
 };
 
+function padToMultipleOf4(data: Uint8Array): Uint8Array {
+    const remainder = data.byteLength % 4;
+    if (remainder === 0) return data;
+
+    const paddedData = new Uint8Array(data.byteLength + (4 - remainder));
+    paddedData.set(data);
+    return paddedData;
+}
+
 const Image = ({
-    src: src,
-    width = 100, // デフォルトの幅
-    height = 100, // デフォルトの高さ
+    src,
+    width = 100,
+    height = 100,
     preserveAspectRatio = true
 }: ImageProps): JSX.Element => {
     const [sixelData, setSixelData] = useState<string>("");
@@ -34,10 +43,10 @@ const Image = ({
     const loadImageData = () => {
         let fileData: Uint8Array;
         if (Buffer.isBuffer(src)) {
-            fileData = new Uint8Array(src.buffer, src.byteOffset, src.byteLength);
+            fileData = padToMultipleOf4(new Uint8Array(src.buffer, src.byteOffset, src.byteLength));
         } else if (typeof src === 'string') {
             const buffer = fs.readFileSync(src);
-            fileData = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+            fileData = padToMultipleOf4(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength));
         } else {
             throw new Error("Invalid src: Buffer or string (file path) expected");
         }
