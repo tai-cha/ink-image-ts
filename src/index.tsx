@@ -18,14 +18,9 @@ const Image = (props:Props):JSX.Element => {
 	const [imageData, setImageData] = useState('');
 
 	useEffect(() => {
-		let isPlaying = true;
 		(async () => {
 			setImageData(await convertToSixel(props.src, Number(props.width), Number(props.height)));
 		})();
-
-		return () => {
-			isPlaying = false;
-		};
 	}, [props]);
 
 	return <Text>{imageData}</Text>;
