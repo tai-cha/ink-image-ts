@@ -1,13 +1,13 @@
 {
 	"name": "ink-image-ts",
-	"version": "3.0.0",
+	"version": "4.0.0-alpha.0",
 	"description": "Image component for Ink",
 	"license": "MIT",
-	"repository": "taichanne30/ink-image",
+	"repository": "tai-cha/ink-image",
 	"author": {
 		"name": "taichan",
 		"email": "dev@taichan.site",
-		"url": "https://github.com/taichanne30"
+		"url": "https://github.com/tai-cha"
 	},
 	"contributors": [
 		{
@@ -38,8 +38,10 @@
 		"image"
 	],
 	"dependencies": {
+		"@napi-rs/canvas": "^0.1.58",
 		"file-type": "^14.7.1",
 		"prop-types": "^15.7.2",
+		"sixel": "^0.16.0",
 		"terminal-image": "^1.2.0"
 	},
 	"devDependencies": {

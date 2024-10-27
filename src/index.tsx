@@ -4,6 +4,8 @@ import {Text} from 'ink'
 import terminalImage from 'terminal-image'
 import React, { useState, useEffect } from 'react'
 import fileType from 'file-type'
+import { convertToSixel } from './encode.js';
+
 
 type Props = {
 	src: Buffer | string,
@@ -21,48 +23,13 @@ type GifProps = {
 	maximumFrameRate?: number
 }
 
-const convertPropsToGifProps = (props:Props):GifProps => {
-	let width:number|undefined = typeof props.width === 'string' ? undefined : props.width
-	let height:number|undefined = typeof props.height === 'string' ? undefined : props.height
-
-	return {...props, width, height}
-}
-
 const Image = (props:Props):JSX.Element => {
 	const [imageData, setImageData] = useState('');
 
 	useEffect(() => {
 		let isPlaying = true;
 		(async () => {
-			if (Buffer.isBuffer(props.src)) {
-				if ((await fileType.fromBuffer(props.src).then(ft => ft?.ext)) === 'gif') {
-					const stopAnimation = terminalImage.gifBuffer(props.src, {
-						...convertPropsToGifProps(props),
-						renderFrame: (imageData:string) => {
-							if (isPlaying) {
-								setImageData(imageData);
-							} else {
-								stopAnimation();
-							}
-						}
-					});
-				} else {
-					setImageData(await terminalImage.buffer(props.src, props));
-				}
-			} else if ((await fileType.fromFile(props.src).then(ft => ft?.ext)) === 'gif') {
-				const stopAnimation = terminalImage.gifFile(props.src, {
-					...convertPropsToGifProps(props),
-					renderFrame: imageData => {
-						if (isPlaying) {
-							setImageData(imageData);
-						} else {
-							stopAnimation();
-						}
-					}
-				});
-			} else {
-				setImageData(await terminalImage.file(props.src, props));
-			}
+			setImageData(await convertToSixel(props.src, Number(props.width), Number(props.height)));
 		})();
 
 		return () => {
