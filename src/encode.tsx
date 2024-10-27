@@ -11,5 +11,12 @@ export async function convertToSixel(src: string | Buffer, width: number, height
     data = new Uint8Array(src);
   }
 
+	const padding = 4 - (data.length % 4);
+  if (padding !== 4) {
+    const paddedData = new Uint8Array(data.length + padding);
+    paddedData.set(data);
+    data = paddedData;
+  }
+
   return image2sixel(data, width, height, maxColors);
 }
