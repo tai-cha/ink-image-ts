@@ -1,37 +1,54 @@
+import React, { useEffect, useState } from 'react';
 import { Text } from 'ink';
-import React, { useState, useEffect } from 'react';
-import { convertToSixel } from './encode.js';
+import { image2sixel } from 'sixel';
+import fs from 'fs';
 
-type Props = {
-  src: Buffer | string;
-  width?: number | string;
-  height?: number | string;
-  preserveAspectRatio?: boolean;
-  maximumFrameRate?: number;
+type ImageProps = {
+	input: Buffer | string;
+	width: number | string;
+	height: number | string;
+	preserveAspectRatio?: boolean;
 };
 
-const Image = (props: Props): JSX.Element => {
-  const { src, width = '100%', height = '100%' } = props;
-  const [imageData, setImageData] = useState('');
+const Image = ({ input, width, height, preserveAspectRatio = true }: ImageProps): JSX.Element => {
+	const [sixelData, setSixelData] = useState<string>("");
 
-  useEffect(() => {
-    const loadImage = async () => {
-      const parsedWidth = typeof width === 'string' ? parseInt(width, 10) : width;
-      const parsedHeight = typeof height === 'string' ? parseInt(height, 10) : height;
+	const parseDimension = (dim: number | string): number => {
+		if (typeof dim === "string") {
+			if (dim.endsWith("%")) {
+				return parseInt(dim, 10) / 100;
+			}
+			return parseInt(dim, 10);
+		}
+		return dim;
+	};
 
-      setImageData(await convertToSixel(src, parsedWidth || 100, parsedHeight || 100));
-    };
-    loadImage();
-  }, [src, width, height]);
+	const parsedWidth = parseDimension(width);
+	const parsedHeight = parseDimension(height);
 
-  return <Text>{imageData}</Text>;
-};
+	const loadImageData = () => {
+		let fileData: Uint8Array;
+		if (Buffer.isBuffer(input)) {
+			fileData = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+		} else if (typeof input === 'string') {
+			const buffer = fs.readFileSync(input);
+			fileData = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+		} else {
+			throw new Error("Invalid input: Buffer or string (file path) expected");
+		}
 
-Image.defaultProps = {
-  width: '100%',
-  height: '100%',
-  preserveAspectRatio: true,
-  maximumFrameRate: 30,
+		const adjustedWidth = preserveAspectRatio ? Math.min(parsedWidth, parsedHeight) : parsedWidth;
+		const adjustedHeight = preserveAspectRatio ? Math.min(parsedWidth, parsedHeight) : parsedHeight;
+
+		setSixelData(image2sixel(fileData, adjustedWidth, adjustedHeight));
+	};
+
+
+	useEffect(() => {
+		loadImageData();
+	}, [input, width, height, preserveAspectRatio]);
+
+	return <Text>{sixelData}</Text>;
 };
 
 export default Image;
