@@ -4,14 +4,14 @@ import { image2sixel } from 'sixel';
 import fs from 'fs';
 
 type ImageProps = {
-    input: Buffer | string;
+    src: Buffer | string;
     width?: number | string;
     height?: number | string;
     preserveAspectRatio?: boolean;
 };
 
 const Image = ({
-    input,
+    src: src,
     width = 100, // デフォルトの幅
     height = 100, // デフォルトの高さ
     preserveAspectRatio = true
@@ -33,13 +33,13 @@ const Image = ({
 
     const loadImageData = () => {
         let fileData: Uint8Array;
-        if (Buffer.isBuffer(input)) {
-            fileData = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
-        } else if (typeof input === 'string') {
-            const buffer = fs.readFileSync(input);
+        if (Buffer.isBuffer(src)) {
+            fileData = new Uint8Array(src.buffer, src.byteOffset, src.byteLength);
+        } else if (typeof src === 'string') {
+            const buffer = fs.readFileSync(src);
             fileData = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
         } else {
-            throw new Error("Invalid input: Buffer or string (file path) expected");
+            throw new Error("Invalid src: Buffer or string (file path) expected");
         }
 
         const adjustedWidth = preserveAspectRatio ? Math.min(parsedWidth, parsedHeight) : parsedWidth;
@@ -50,7 +50,7 @@ const Image = ({
 
     useEffect(() => {
         loadImageData();
-    }, [input, width, height, preserveAspectRatio]);
+    }, [src, width, height, preserveAspectRatio]);
 
     return <Text>{sixelData}</Text>;
 };
