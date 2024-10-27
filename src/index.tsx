@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text } from 'ink';
 import { image2sixel } from 'sixel';
+import sharp from 'sharp';
 import fs from 'fs';
 
 type ImageProps = {
@@ -40,21 +41,39 @@ const Image = ({
     const parsedWidth = parseDimension(width);
     const parsedHeight = parseDimension(height);
 
-    const loadImageData = () => {
-        let fileData: Uint8Array;
+    const loadImageData = async () => {
+        let imageBuffer: Buffer;
         if (Buffer.isBuffer(src)) {
-            fileData = padToMultipleOf4(new Uint8Array(src.buffer, src.byteOffset, src.byteLength));
+            imageBuffer = src;
         } else if (typeof src === 'string') {
-            const buffer = fs.readFileSync(src);
-            fileData = padToMultipleOf4(new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength));
+            imageBuffer = fs.readFileSync(src);
         } else {
             throw new Error("Invalid src: Buffer or string (file path) expected");
         }
 
-        const adjustedWidth = preserveAspectRatio ? Math.min(parsedWidth, parsedHeight) : parsedWidth;
-        const adjustedHeight = preserveAspectRatio ? Math.min(parsedWidth, parsedHeight) : parsedHeight;
+        const image = sharp(imageBuffer);
+        const metadata = await image.metadata();
+        const srcWidth = metadata.width || parsedWidth;
+        const srcHeight = metadata.height || parsedHeight;
 
-        setSixelData(image2sixel(fileData, adjustedWidth, adjustedHeight));
+        let targetWidth = parsedWidth;
+        let targetHeight = parsedHeight;
+        if (preserveAspectRatio) {
+            const aspectRatio = srcWidth / srcHeight;
+            if (parsedWidth / parsedHeight > aspectRatio) {
+                targetWidth = Math.round(parsedHeight * aspectRatio);
+            } else {
+                targetHeight = Math.round(parsedWidth / aspectRatio);
+            }
+        }
+
+        const resizedBuffer = await image
+            .resize(targetWidth, targetHeight, { fit: preserveAspectRatio ? 'inside' : 'fill' })
+            .raw()
+            .toBuffer();
+
+        const paddedData = padToMultipleOf4(new Uint8Array(resizedBuffer));
+        setSixelData(image2sixel(paddedData, targetWidth, targetHeight));
     };
 
     useEffect(() => {
